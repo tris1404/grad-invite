@@ -3,14 +3,24 @@ import { invitation, memories } from './config'
 import { useCountdown } from './hooks/useCountdown'
 import { useReducedMotion } from './hooks/useReducedMotion'
 import './invitation.css'
+import './envelope.css'
 
 const Icon = ({ children }) => <span className="icon" aria-hidden="true">{children}</span>
 
-function EnvelopeIntro({ status, setStatus }) {
+function EnvelopeIntro({ status, setStatus, visible, setVisible }) {
   const reduced = useReducedMotion()
-  const start = () => { if (reduced) return setStatus('open'); setStatus('opening'); window.setTimeout(() => setStatus('open'), 1450) }
-  if (status === 'open') return null
-  return <div className={`intro ${status}`} role="dialog" aria-label="Mở thiệp mời tốt nghiệp"><div className="intro-grid" /><div className="boot-line"><span>&gt; loading_invitation</span><b> OK</b><i /></div><p className="intro-message">Trân trọng kính mời bạn đến dự<br /><strong>lễ tốt nghiệp của Nguyễn Tài Trí</strong></p><button className="envelope-button" type="button" onClick={start} disabled={status === 'opening'}><span className="envelope" aria-hidden="true"><span className="envelope-flap" /><span className="envelope-fold" /></span><span className="open-label">{status === 'opening' ? 'đang khởi động...' : 'Chạm để mở thiệp'} <small>click to run</small></span></button><button className="skip-button" type="button" onClick={() => setStatus('open')}>Bỏ qua animation <Icon>→</Icon></button></div>
+  const timers = useRef([])
+  useEffect(() => { document.body.classList.toggle('locked', visible); return () => document.body.classList.remove('locked') }, [visible])
+  useEffect(() => () => timers.current.forEach(window.clearTimeout), [])
+  const close = () => { timers.current.forEach(window.clearTimeout); timers.current = []; setVisible(false); setStatus('closed') }
+  const start = () => {
+    if (status === 'opening') return
+    if (reduced) return close()
+    setStatus('opening')
+    timers.current = [window.setTimeout(() => document.querySelector('.intro')?.classList.add('closing'), 1700), window.setTimeout(close, 2400)]
+  }
+  if (!visible) return null
+  return <div className={`intro ${status === 'opening' ? 'opening' : ''}`} role="dialog" aria-modal="true" aria-label="Thiệp mời tốt nghiệp"><p className="tag">Thiệp mời · 18.11.2026</p><div className="stage"><button type="button" className="envbtn" aria-label="Mở thiệp mời" onClick={start} disabled={status === 'opening'}><span className="env"><span className="env-back" /><span className="letter"><small>Kính mời</small><b>Lễ tốt nghiệp<br />Nguyễn Tài Trí</b><span>10:00 · 18/11/2026</span></span><span className="env-front" /><span className="env-flap" /><span className="seal">TT</span></span></button></div><p className="boot">&gt; {status === 'opening' ? 'mở thiệp... OK' : 'chạm để mở thiệp'}<span className="caret" /></p><button type="button" className="skip" onClick={close}>Bỏ qua</button></div>
 }
 
 function ThemeToggle({ theme, setTheme }) { return <button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Chuyển giao diện sáng tối"><span>{theme === 'dark' ? '☼' : '◐'}</span> {theme === 'dark' ? 'light' : 'dark'}</button> }
@@ -44,5 +54,5 @@ function Rsvp() {
 }
 function Footer() { return <footer className="footer section-shell"><div><p className="eyebrow">git commit -m "Tốt nghiệp 2026"</p><h2>Cảm ơn vì đã<br /><em>đồng hành.</em></h2><p className="footer-note">Rất mong bạn sẽ có mặt trong ngày đặc biệt của mình. Sự hiện diện của bạn sẽ làm khoảnh khắc này trọn vẹn hơn.</p></div><div className="footer-contact"><p>LIÊN HỆ / ZALO</p><a href={`tel:${invitation.phone}`}>{invitation.phone}</a><small>{invitation.graduate}<br />{invitation.major}</small></div><div className="footer-bottom"><span>© 2026 {invitation.graduate}</span><a href="#top">Về đầu trang ↑</a></div></footer> }
 function ScrollProgress() { const [progress, setProgress] = useState(0); useEffect(() => { const update = () => { const max = document.documentElement.scrollHeight - window.innerHeight; setProgress(max > 0 ? window.scrollY / max : 0) }; update(); window.addEventListener('scroll', update, { passive: true }); return () => window.removeEventListener('scroll', update) }, []); return <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" /> }
-function App() { const [status, setStatus] = useState('closed'); const [theme, setTheme] = useState('dark'); useEffect(() => { document.documentElement.dataset.theme = theme }, [theme]); return <><EnvelopeIntro status={status} setStatus={setStatus} /><div className={`site ${status === 'open' ? 'site-visible' : ''}`}><ScrollProgress /><nav className="nav section-shell"><a href="#top" className="brand">N.T.T <span>/ 2026</span></a><div className="nav-links"><a href="#event">Sự kiện</a><a href="#memories">Kỷ niệm</a><a href="#rsvp">RSVP</a></div><ThemeToggle theme={theme} setTheme={setTheme} /></nav><main><Hero onReplay={() => setStatus('closed')} /><EventInfo /><Countdown /><MapSection /><MemoryGallery /><Rsvp /></main><Footer /></div></> }
+function App() { const [status, setStatus] = useState('closed'); const [introVisible, setIntroVisible] = useState(true); const [theme, setTheme] = useState('light'); useEffect(() => { document.documentElement.dataset.theme = theme }, [theme]); const replay = () => { setStatus('closed'); setIntroVisible(true) }; return <><EnvelopeIntro status={status} setStatus={setStatus} visible={introVisible} setVisible={setIntroVisible} /><div className="site site-visible"><ScrollProgress /><nav className="nav section-shell"><a href="#top" className="brand">N.T.T <span>/ 2026</span></a><div className="nav-links"><a href="#event">Sự kiện</a><a href="#memories">Kỷ niệm</a><a href="#rsvp">RSVP</a></div><ThemeToggle theme={theme} setTheme={setTheme} /></nav><main><Hero onReplay={replay} /><EventInfo /><Countdown /><MapSection /><MemoryGallery /><Rsvp /></main><Footer /></div></> }
 export default App

@@ -1,0 +1,429 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Lễ tốt nghiệp Nguyễn Tài Trí</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: một cột hẹp như poster cuộn dọc; tên lớn ở đầu, thông tin sự kiện, đếm ngược, bản đồ, RSVP. */
+:root {
+  --bg: #F2F4FF;
+  --surface: #FFFFFF;
+  --fg: #0C1A5E;
+  --muted: #4B5690;
+  --line: #CBD1F5;
+  --accent: #2E4BFF;
+  --on-accent: #FFFFFF;
+  --sun: #FFD23F;
+  --on-sun: #0C1A5E;
+  --code-bg: #0C1A5E;
+  --code-fg: #E4E8FF;
+  --code-key: #FFD23F;
+  --code-str: #8FE3B0;
+  --code-dim: #8E99D6;
+  --env-back: #1B2FA8;
+  --env-front: #2E4BFF;
+  --env-flap: #3F5AFF;
+  --ok: #0F7A4A;
+  --err: #B3261E;
+  --f-display: "Bricolage Grotesque", "Be Vietnam Pro", system-ui, sans-serif;
+  --f-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #080D2B; --surface: #111A4A; --fg: #EEF0FF; --muted: #A5AEE0; --line: #2A3678;
+    --accent: #8A9CFF; --on-accent: #080D2B; --sun: #FFD23F; --on-sun: #0C1A5E;
+    --code-bg: #04071B; --code-fg: #E4E8FF; --code-key: #FFD23F; --code-str: #8FE3B0; --code-dim: #7C88C8;
+    --ok: #6FD9A3; --err: #FF9C94; --env-back: #2A3BA0; --env-front: #4A5FE0; --env-flap: #5A6EF0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #080D2B; --surface: #111A4A; --fg: #EEF0FF; --muted: #A5AEE0; --line: #2A3678;
+  --accent: #8A9CFF; --on-accent: #080D2B; --sun: #FFD23F; --on-sun: #0C1A5E;
+  --code-bg: #04071B; --code-fg: #E4E8FF; --code-key: #FFD23F; --code-str: #8FE3B0; --code-dim: #7C88C8;
+  --ok: #6FD9A3; --err: #FF9C94; --env-back: #2A3BA0; --env-front: #4A5FE0; --env-flap: #5A6EF0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 24px 24px;
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  padding-inline: 18px; padding-block: 28px 56px;
+}
+.wrap { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.02; letter-spacing: -0.02em; }
+p { margin: 0; }
+.label { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+/* Hero */
+.hero { display: flex; flex-direction: column; gap: 22px; position: relative; padding-top: 8px; }
+.hero .kinh { font-size: 17px; color: var(--muted); }
+.hero h1 { font-size: clamp(52px, 15vw, 104px); font-weight: 800; }
+.hero h1 span { display: block; }
+.hero h1 .hl { background: linear-gradient(transparent 58%, var(--sun) 58% 92%, transparent 92%); width: fit-content; }
+.hero .meta { font-size: 17px; max-width: 46ch; }
+.date-chip {
+  align-self: flex-start; background: var(--sun); color: var(--on-sun);
+  font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: -0.01em;
+  padding: 10px 18px; border-radius: 999px; transform: rotate(-2.5deg);
+}
+
+/* Countdown */
+.count { display: flex; flex-direction: column; gap: 14px; }
+.clock { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.clock div { background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 6px 10px; text-align: center; }
+.clock b { display: block; font-family: var(--f-display); font-size: clamp(30px, 9vw, 48px); font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+.clock small { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.count .done { font-family: var(--f-display); font-weight: 800; font-size: 28px; }
+
+/* Details */
+.details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 24px; }
+.details h2 { font-size: 15px; font-family: var(--f-mono); font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.details .big { font-family: var(--f-display); font-weight: 700; font-size: clamp(24px, 6vw, 32px); line-height: 1.12; letter-spacing: -0.015em; margin-top: 8px; }
+.details .sub { color: var(--muted); margin-top: 4px; }
+.details > div { min-width: 0; }
+
+/* Code card */
+pre.code {
+  margin: 0; background: var(--code-bg); color: var(--code-fg);
+  font-family: var(--f-mono); font-size: 13.5px; line-height: 1.75;
+  padding: 20px 20px; border-radius: 16px; overflow-x: auto;
+}
+.code .k { color: var(--code-key); } .code .s { color: var(--code-str); } .code .c { color: var(--code-dim); }
+
+/* Map */
+.where { display: flex; flex-direction: column; gap: 16px; }
+.where h2, .rsvp h2 { font-size: clamp(32px, 8vw, 46px); font-weight: 800; }
+.where p { max-width: 52ch; color: var(--muted); }
+.btn {
+  appearance: none; border: 0; cursor: pointer; text-decoration: none; text-align: center;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--accent); color: var(--on-accent);
+  font-family: var(--f-body); font-weight: 600; font-size: 16px;
+  padding: 14px 24px; border-radius: 999px; width: fit-content;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--fg); border: 1.5px solid var(--line); }
+
+/* RSVP */
+.rsvp { background: var(--surface); border: 1.5px solid var(--line); border-radius: 22px; padding: 26px 22px; display: flex; flex-direction: column; gap: 20px; }
+.rsvp > p { color: var(--muted); max-width: 50ch; }
+form { display: flex; flex-direction: column; gap: 18px; }
+.field { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.field > label, fieldset legend { font-weight: 600; font-size: 15px; padding: 0; }
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+input[type="text"], select, textarea {
+  width: 100%; font: inherit; color: var(--fg); background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px;
+}
+textarea { min-height: 96px; resize: vertical; }
+.choices { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.choice { position: relative; }
+.choice input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+.choice span {
+  display: block; text-align: center; padding: 13px 10px; border-radius: 12px;
+  border: 1.5px solid var(--line); background: var(--bg); font-weight: 500;
+}
+.choice input:checked + span { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-weight: 600; }
+.choice input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 3px; }
+.err { color: var(--err); font-size: 14px; min-height: 1.2em; }
+.result { display: flex; flex-direction: column; gap: 12px; }
+.result .ok { font-family: var(--f-display); font-weight: 800; font-size: 28px; line-height: 1.1; }
+.fallback { display: flex; flex-direction: column; gap: 12px; }
+.fallback textarea { min-height: 120px; font-family: var(--f-mono); font-size: 13px; }
+
+.foot { font-family: var(--f-mono); font-size: 12px; color: var(--muted); text-align: left; }
+
+/* Intro: thiệp đóng, bấm để mở */
+body.locked { overflow: hidden; }
+h1:focus { outline: none; }
+.caret { display: inline-block; width: 0.6em; height: 1em; background: currentColor; vertical-align: -0.15em; margin-left: 4px; }
+.intro {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px;
+  padding: 24px 18px;
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px); background-size: 24px 24px;
+  transition: opacity .6s ease, transform .6s ease;
+}
+.intro.closing { opacity: 0; transform: scale(1.06); pointer-events: none; }
+.intro .tag { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.stage { padding-top: 76px; }
+.envbtn { appearance: none; border: 0; background: none; padding: 0; cursor: pointer; display: block; font: inherit; color: inherit; border-radius: 12px; }
+.env { display: block; position: relative; width: min(84vw, 360px); aspect-ratio: 3 / 2; }
+.env > * { position: absolute; display: block; }
+.env-back { inset: 0; background: var(--env-back); border-radius: 10px; }
+.letter {
+  left: 6%; right: 6%; top: 9%; height: 84%; z-index: 2;
+  background: var(--surface); color: var(--fg); border: 1.5px solid var(--line); border-radius: 8px;
+  padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; gap: 4px; text-align: left;
+  transition: transform .8s cubic-bezier(.2, .8, .2, 1) .45s;
+}
+.letter small { font-family: var(--f-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.letter b { font-family: var(--f-display); font-size: clamp(20px, 6vw, 26px); line-height: 1.05; letter-spacing: -0.01em; }
+.letter span { font-family: var(--f-mono); font-size: 11px; color: var(--accent); }
+.env-front { inset: 0; z-index: 3; background: var(--env-front); border-radius: 10px; clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%); }
+.env-flap {
+  left: 0; right: 0; top: 0; height: 56%; z-index: 4; background: var(--env-flap);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center; transform: perspective(900px) rotateX(0deg);
+  transition: transform .7s ease, z-index 0s linear .35s;
+}
+.seal {
+  left: 50%; top: 56%; width: 40px; height: 40px; margin: -20px 0 0 -20px; z-index: 5;
+  border-radius: 50%; background: var(--sun); color: var(--on-sun);
+  display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; font-size: 14px;
+  transition: opacity .25s ease;
+}
+.intro.opening .env-flap { transform: perspective(900px) rotateX(180deg); z-index: 1; }
+.intro.opening .letter { transform: translateY(-58%); }
+.intro.opening .seal { opacity: 0; }
+.boot { font-family: var(--f-mono); font-size: 14px; min-height: 1.6em; margin: 0; }
+.skip { appearance: none; background: none; border: 0; color: var(--muted); font-family: var(--f-mono); font-size: 12px; text-decoration: underline; cursor: pointer; padding: 8px 6px; }
+@media (max-width: 440px) {
+  .details { grid-template-columns: minmax(0, 1fr); }
+  .btn { width: 100%; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .date-chip { transition: transform .25s ease; }
+  .date-chip:hover { transform: rotate(0deg) scale(1.03); }
+  .caret { animation: blink 1s steps(1) infinite; }
+  .env { animation: bob 3.2s ease-in-out infinite; }
+  .intro.opening .env { animation: none; }
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes bob { 50% { transform: translateY(-6px); } }
+}
+</style>
+
+<div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Thiệp mời tốt nghiệp">
+  <p class="tag">Thiệp mời · 18.11.2026</p>
+  <div class="stage">
+    <button type="button" class="envbtn" id="envbtn" aria-label="Mở thiệp mời">
+      <span class="env">
+        <span class="env-back"></span>
+        <span class="letter"><small>Kính mời</small><b>Lễ tốt nghiệp<br>Nguyễn Tài Trí</b><span>10:00 · 18/11/2026</span></span>
+        <span class="env-front"></span>
+        <span class="env-flap"></span>
+        <span class="seal">TT</span>
+      </span>
+    </button>
+  </div>
+  <p class="boot" id="boot">&gt; chạm để mở thiệp<span class="caret"></span></p>
+  <button type="button" class="skip" id="skip">Bỏ qua</button>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <p class="label">&gt; graduation.init()<span class="caret"></span></p>
+    <p class="kinh">Trân trọng kính mời bạn đến dự lễ tốt nghiệp của</p>
+    <h1 tabindex="-1"><span>Nguyễn</span><span>Tài <span class="hl" style="display:inline">Trí</span></span></h1>
+    <p class="meta">Ngành Công nghệ thông tin, Trường Đại học Giao thông vận tải Thành phố Hồ Chí Minh.</p>
+    <p class="date-chip">10:00 · 18/11/2026</p>
+  </header>
+
+  <section class="count" aria-label="Đếm ngược đến ngày lễ">
+    <p class="label">Còn lại</p>
+    <div class="clock" id="clock">
+      <div><b id="cd">--</b><small>ngày</small></div>
+      <div><b id="ch">--</b><small>giờ</small></div>
+      <div><b id="cm">--</b><small>phút</small></div>
+      <div><b id="cs">--</b><small>giây</small></div>
+    </div>
+    <p class="done" id="done" hidden></p>
+  </section>
+
+  <section class="details" aria-label="Thông tin buổi lễ">
+    <div>
+      <h2>Thời gian</h2>
+      <p class="big">10:00, thứ Tư<br>18 tháng 11, 2026</p>
+      <p class="sub">Giờ Việt Nam (UTC+7)</p>
+    </div>
+    <div>
+      <h2>Địa điểm</h2>
+      <p class="big">Trường Đại học Giao thông vận tải TP.HCM</p>
+      <p class="sub">Bản đồ và chỉ đường ở bên dưới</p>
+    </div>
+  </section>
+
+  <pre class="code" aria-hidden="true"><span class="c">// build 2022 → 2026</span>
+<span class="k">const</span> tri = {
+  nganh: <span class="s">"Công nghệ thông tin"</span>,
+  status: <span class="s">"graduated"</span>,
+};
+
+<span class="k">function</span> invite(guest) {
+  <span class="k">return</span> <span class="s">`Mời ${guest} đến chung vui 18/11`</span>;
+}</pre>
+
+  <section class="where" aria-label="Bản đồ">
+    <p class="label">Đường đến buổi lễ</p>
+    <h2>Gặp nhau ở trường</h2>
+    <p>Bấm nút dưới đây để mở Google Maps và xem đường đi từ vị trí của bạn đến Trường Đại học Giao thông vận tải TP.HCM.</p>
+    <a class="btn" href="https://www.google.com/maps/search/?api=1&query=10.804523,106.714143" target="_blank" rel="noopener">Mở Google Maps</a>
+  </section>
+
+  <section class="rsvp" aria-label="Xác nhận tham dự">
+    <p class="label">RSVP</p>
+    <h2>Bạn đến được không?</h2>
+    <p>Điền nhanh các ô dưới đây, trang sẽ soạn sẵn tin nhắn để bạn gửi cho Trí. Trí cần biết trước để chuẩn bị chỗ ngồi cho bạn và người đi cùng.</p>
+
+    <form id="rsvp-form" novalidate>
+      <div class="field">
+        <label for="name">Tên của bạn</label>
+        <input type="text" id="name" name="name" autocomplete="name" placeholder="Ví dụ: Nguyễn Văn A" maxlength="80">
+      </div>
+      <fieldset>
+        <legend>Bạn có tham dự không?</legend>
+        <div class="choices">
+          <label class="choice"><input type="radio" name="status" value="yes" checked><span>Mình sẽ đến</span></label>
+          <label class="choice"><input type="radio" name="status" value="no"><span>Rất tiếc, không đến được</span></label>
+        </div>
+      </fieldset>
+      <div class="field" id="plus-wrap">
+        <label for="plus">Số người đi cùng (không tính bạn)</label>
+        <select id="plus" name="plus">
+          <option value="0">Đi một mình</option>
+          <option value="1">1 người</option>
+          <option value="2">2 người</option>
+          <option value="3">3 người</option>
+          <option value="4">4 người</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="note">Lời nhắn cho Trí (không bắt buộc)</label>
+        <textarea id="note" name="note" maxlength="400" placeholder="Gửi lời chúc hoặc điều bạn muốn nói"></textarea>
+      </div>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn" type="submit" id="send">Tạo tin nhắn xác nhận</button>
+    </form>
+
+    <div class="result" id="result" hidden></div>
+  </section>
+
+  <p class="foot">Nguyễn Tài Trí · Công nghệ thông tin · 18/11/2026 · <button type="button" class="skip" id="replay">Xem lại thiệp mở</button></p>
+</div>
+
+<script>
+(function () {
+  var target = new Date("2026-11-18T10:00:00+07:00").getTime();
+  var $ = function (id) { return document.getElementById(id); };
+  function pad(n) { return String(n).padStart(2, "0"); }
+  function tick() {
+    var diff = target - Date.now();
+    if (diff <= 0) {
+      $("clock").hidden = true;
+      var done = $("done");
+      done.hidden = false;
+      done.textContent = diff > -86400000 ? "Hôm nay là ngày vui." : "Buổi lễ đã diễn ra. Cảm ơn bạn đã chúc mừng Trí.";
+      return;
+    }
+    var s = Math.floor(diff / 1000);
+    $("cd").textContent = Math.floor(s / 86400);
+    $("ch").textContent = pad(Math.floor((s % 86400) / 3600));
+    $("cm").textContent = pad(Math.floor((s % 3600) / 60));
+    $("cs").textContent = pad(s % 60);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  var form = $("rsvp-form");
+  var plusWrap = $("plus-wrap");
+  function status() { return form.elements.status.value; }
+  form.addEventListener("change", function () { plusWrap.hidden = status() === "no"; });
+
+  function summary(d) {
+    var t = "Xin chào Trí, mình là " + d.name + ". ";
+    t += d.status === "yes"
+      ? "Mình sẽ đến dự lễ tốt nghiệp lúc 10:00 ngày 18/11/2026" + (d.plus > 0 ? ", đi cùng " + d.plus + " người." : ", đi một mình.")
+      : "Rất tiếc mình không đến được lễ tốt nghiệp ngày 18/11/2026.";
+    if (d.note) t += " Lời nhắn: " + d.note;
+    return t;
+  }
+
+  function showResult(d, saved) {
+    form.hidden = true;
+    var box = $("result");
+    box.hidden = false;
+    box.textContent = "";
+    var h = document.createElement("p");
+    h.className = "ok";
+    var p = document.createElement("p");
+    if (saved) {
+      h.textContent = d.status === "yes" ? "Hẹn gặp bạn ngày 18/11!" : "Cảm ơn bạn đã báo cho Trí.";
+      p.textContent = "Trí đã nhận được xác nhận của bạn.";
+      box.append(h, p);
+      return;
+    }
+    h.textContent = d.status === "yes" ? "Tin nhắn của bạn đã sẵn sàng" : "Cảm ơn bạn đã báo cho Trí";
+    p.textContent = "Trang này chưa tự gửi được câu trả lời. Hãy sao chép tin nhắn dưới đây và gửi trực tiếp cho Trí qua Zalo hoặc Messenger.";
+    var fb = document.createElement("div");
+    fb.className = "fallback";
+    var ta = document.createElement("textarea");
+    ta.readOnly = true;
+    ta.id = "fb-text";
+    ta.setAttribute("aria-label", "Tin nhắn xác nhận");
+    ta.value = summary(d);
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "btn";
+    btn.textContent = "Sao chép tin nhắn";
+    btn.addEventListener("click", function () {
+      var done = function () { btn.textContent = "Đã sao chép"; };
+      var sel = function () { ta.focus(); ta.select(); btn.textContent = "Hãy nhấn giữ để sao chép"; };
+      try { navigator.clipboard.writeText(ta.value).then(done, sel); } catch (e) { sel(); }
+    });
+    fb.append(ta, btn);
+    box.append(h, p, fb);
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    var err = $("err");
+    err.textContent = "";
+    var d = {
+      name: form.elements.name.value.trim(),
+      status: status(),
+      plus: status() === "yes" ? parseInt(form.elements.plus.value, 10) || 0 : 0,
+      note: form.elements.note.value.trim()
+    };
+    if (!d.name) { err.textContent = "Bạn hãy nhập tên để Trí biết ai đã trả lời."; form.elements.name.focus(); return; }
+    showResult(d, false);
+  });
+
+  var intro = $("intro"), boot = $("boot");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var timers = [];
+  document.body.classList.add("locked");
+  function finish() {
+    timers.forEach(clearTimeout);
+    timers = [];
+    intro.hidden = true;
+    document.body.classList.remove("locked");
+    var h = document.querySelector("h1");
+    if (h) h.focus({ preventScroll: true });
+  }
+  function openCard() {
+    if (intro.classList.contains("opening")) return;
+    if (reduce) { finish(); return; }
+    intro.classList.add("opening");
+    boot.textContent = "> mở thiệp... OK";
+    timers.push(setTimeout(function () { intro.classList.add("closing"); }, 1700));
+    timers.push(setTimeout(finish, 2400));
+  }
+  $("envbtn").addEventListener("click", openCard);
+  $("skip").addEventListener("click", finish);
+  $("replay").addEventListener("click", function () {
+    intro.classList.remove("opening", "closing");
+    boot.innerHTML = "&gt; chạm để mở thiệp<span class=\"caret\"></span>";
+    intro.hidden = false;
+    document.body.classList.add("locked");
+    window.scrollTo(0, 0);
+    $("envbtn").focus();
+  });
+})();
+</script>
+
+</body></html>
