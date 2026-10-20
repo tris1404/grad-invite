@@ -1,58 +1,660 @@
 import { useEffect, useRef, useState } from 'react'
+import confetti from 'canvas-confetti'
 import { invitation, memories } from './config'
 import { useCountdown } from './hooks/useCountdown'
 import { useReducedMotion } from './hooks/useReducedMotion'
+import './index.css'
 import './invitation.css'
 import './envelope.css'
 
-const Icon = ({ children }) => <span className="icon" aria-hidden="true">{children}</span>
+const triggerConfetti = () => {
+  confetti({
+    particleCount: 80,
+    spread: 70,
+    origin: { y: 0.6 },
+    colors: ['#6366f1', '#fbbf24', '#10b981', '#f43f5e', '#38bdf8']
+  })
+}
 
 function EnvelopeIntro({ status, setStatus, visible, setVisible }) {
   const reduced = useReducedMotion()
   const timers = useRef([])
-  useEffect(() => { document.body.classList.toggle('locked', visible); return () => document.body.classList.remove('locked') }, [visible])
-  useEffect(() => () => timers.current.forEach(window.clearTimeout), [])
-  const close = () => { timers.current.forEach(window.clearTimeout); timers.current = []; setVisible(false); setStatus('closed') }
+
+  useEffect(() => {
+    document.body.classList.toggle('locked', visible)
+    return () => document.body.classList.remove('locked')
+  }, [visible])
+
+  useEffect(() => {
+    return () => timers.current.forEach(window.clearTimeout)
+  }, [])
+
+  const close = () => {
+    timers.current.forEach(window.clearTimeout)
+    timers.current = []
+    setVisible(false)
+    setStatus('closed')
+  }
+
   const start = () => {
     if (status === 'opening') return
     if (reduced) return close()
+
     setStatus('opening')
-    timers.current = [window.setTimeout(() => document.querySelector('.intro')?.classList.add('closing'), 1700), window.setTimeout(close, 2400)]
+    
+    // Shoot confetti when envelope opens
+    window.setTimeout(() => {
+      triggerConfetti()
+    }, 600)
+
+    timers.current = [
+      window.setTimeout(() => document.querySelector('.intro')?.classList.add('closing'), 1800),
+      window.setTimeout(close, 2500),
+    ]
   }
+
   if (!visible) return null
-  return <div className={`intro ${status === 'opening' ? 'opening' : ''}`} role="dialog" aria-modal="true" aria-label="Thiệp mời tốt nghiệp"><p className="tag">Thiệp mời · 18.11.2026</p><div className="stage"><button type="button" className="envbtn" aria-label="Mở thiệp mời" onClick={start} disabled={status === 'opening'}><span className="env"><span className="env-back" /><span className="letter"><small>Kính mời</small><b>Lễ tốt nghiệp<br />Nguyễn Tài Trí</b><span>10:00 · 18/11/2026</span></span><span className="env-front" /><span className="env-flap" /><span className="seal">TT</span></span></button></div><p className="boot">&gt; {status === 'opening' ? 'mở thiệp... OK' : 'chạm để mở thiệp'}<span className="caret" /></p><button type="button" className="skip" onClick={close}>Bỏ qua</button></div>
+
+  return (
+    <div
+      className={`intro ${status === 'opening' ? 'opening' : ''}`}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Thiệp mời tốt nghiệp"
+    >
+      <div className="intro-badge">
+        <span>🎓</span>
+        <span>Lời mời chính thức · 2026</span>
+      </div>
+
+      <div className="envelope-stage">
+        <div className="envelope-wrapper">
+          <button
+            type="button"
+            className="envbtn"
+            aria-label="Chạm để mở thiệp mời"
+            onClick={start}
+            disabled={status === 'opening'}
+          >
+            <div className="env-container">
+              {/* Back background */}
+              <div className="env-back-bg" />
+
+              {/* Slidable Letter inside */}
+              <div className="env-letter">
+                <div className="env-letter-head">
+                  <span className="env-letter-tag">INVITATION CARD</span>
+                  <span className="env-letter-icon">✨</span>
+                </div>
+                <div className="env-letter-title">
+                  Lễ Tốt Nghiệp
+                  <span>Nguyễn Tài Trí</span>
+                </div>
+                <div className="env-letter-foot">
+                  <span>10:00 · 18/11/2026</span>
+                  <strong>UTH</strong>
+                </div>
+              </div>
+
+              {/* Front flap and fold cover */}
+              <div className="env-front-cover" />
+              <div className="env-flap" />
+              
+              {/* Wax Seal Stamp */}
+              <div className="env-seal">TT</div>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <div className="intro-hint">
+        <span className="pulse-dot" />
+        <span>{status === 'opening' ? 'Đang mở phong thư...' : 'Chạm vào phong thư để mở'}</span>
+      </div>
+
+      <button type="button" className="intro-skip" onClick={close}>
+        Bỏ qua hoạt ảnh →
+      </button>
+    </div>
+  )
 }
 
-function ThemeToggle({ theme, setTheme }) { return <button className="theme-toggle" type="button" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} aria-label="Chuyển giao diện sáng tối"><span>{theme === 'dark' ? '☼' : '◐'}</span> {theme === 'dark' ? 'light' : 'dark'}</button> }
-function Hero({ onReplay }) { return <header className="hero section-shell" id="top"><div className="hero-copy reveal"><p className="eyebrow">// graduation_invitation.exe</p><h1>Nguyễn<br /><em>Tài Trí</em></h1><p className="hero-lead">Trân trọng kính mời bạn<br />đến dự lễ tốt nghiệp</p><div className="code-block"><span className="code-green">const</span> tri = {'{'}<br />&nbsp;&nbsp;nganh: <span className="code-yellow">"Công nghệ thông tin"</span>,<br />&nbsp;&nbsp;status: <span className="code-cyan">"graduated"</span><br />{'}'};</div></div><div className="hero-side reveal"><p className="section-index">01 / profile</p><div className="portrait-frame"><div className="window-bar"><span /><span /><span /> <small>portrait.jpg</small></div><div className="portrait-placeholder"><img className="portrait-image" src="/src/assets/portrait.jpg" alt="Chân dung Nguyễn Tài Trí" onError={(event) => { event.currentTarget.style.display = 'none' }} /><div className="scan-line" /><span>Thay ảnh chân dung<br />vào đây</span><small>src/assets/portrait.jpg</small></div></div><p className="hero-school">{invitation.major}<br /><strong>{invitation.school}</strong></p><button className="text-button" type="button" onClick={onReplay}>Mở lại thiệp <Icon>↗</Icon></button></div></header> }
-function EventInfo() { return <section className="event-section section-shell" id="event"><div className="section-heading"><p className="section-index">02 / event</p><h2>Một cột mốc,<br /><em>một buổi gặp.</em></h2></div><div className="event-grid"><article className="info-card"><span className="card-label">WHEN</span><strong>10:00</strong><p>Thứ Tư, ngày 18 tháng 11 năm 2026<br /><span>Giờ Việt Nam (UTC+7)</span></p></article><article className="info-card"><span className="card-label">WHERE</span><strong>TP.HCM</strong><p>{invitation.venue}<br /><span>{invitation.address}</span></p></article></div></section> }
-function Countdown() { const time = useCountdown(invitation.targetDate); return <section className="countdown-section section-shell"><div><p className="eyebrow">&gt; system.countdown()</p><h2>{time.total ? 'Đếm ngược đến ngày vui' : 'Cảm ơn bạn đã ở đây.'}</h2></div>{time.total > 0 && <div className="countdown" aria-label="Đếm ngược"><div><b>{String(time.days).padStart(2, '0')}</b><span>ngày</span></div><i>:</i><div><b>{String(time.hours).padStart(2, '0')}</b><span>giờ</span></div><i>:</i><div><b>{String(time.minutes).padStart(2, '0')}</b><span>phút</span></div><i>:</i><div><b>{String(time.seconds).padStart(2, '0')}</b><span>giây</span></div></div>}</section> }
-function MapSection() { return <section className="map-section section-shell" id="map"><div className="map-copy"><p className="section-index">03 / location</p><h2>Hẹn bạn<br /><em>ở đây.</em></h2><p>Chúng ta sẽ gặp nhau tại giảng đường quen thuộc, nơi những dòng code đầu tiên đã được viết.</p><a className="button button-primary" href={invitation.mapsUrl} target="_blank" rel="noreferrer">Chỉ đường <Icon>↗</Icon></a></div><div className="map-frame"><iframe src={invitation.mapEmbed} title="Bản đồ đến Trường Đại học Giao thông vận tải TP.HCM" width="600" height="450" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="strict-origin-when-cross-origin" /></div></section> }
-function Lightbox({ active, index, setIndex, close }) { const touchStart = useRef(0); useEffect(() => { const onKey = (event) => { if (event.key === 'Escape') close(); if (event.key === 'ArrowRight') setIndex((index + 1) % memories.length); if (event.key === 'ArrowLeft') setIndex((index - 1 + memories.length) % memories.length) }; if (active) { document.body.style.overflow = 'hidden'; window.addEventListener('keydown', onKey) } return () => { document.body.style.overflow = ''; window.removeEventListener('keydown', onKey) } }, [active, close, index, setIndex]); if (!active) return null; const item = memories[index]; return <div className="lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh kỷ niệm" onClick={close} onTouchStart={(event) => { touchStart.current = event.changedTouches[0].screenX }} onTouchEnd={(event) => { const delta = event.changedTouches[0].screenX - touchStart.current; if (Math.abs(delta) > 50) setIndex((index + (delta < 0 ? 1 : -1) + memories.length) % memories.length) }}><button className="lightbox-close" type="button" onClick={close} aria-label="Đóng">×</button><button className="lightbox-arrow prev" type="button" onClick={(event) => { event.stopPropagation(); setIndex((index - 1 + memories.length) % memories.length) }} aria-label="Ảnh trước">←</button><div className="lightbox-content" onClick={(event) => event.stopPropagation()}><div className="photo-placeholder large"><img className="lightbox-image" src={item.src} alt={item.alt} onError={(event) => { event.currentTarget.style.display = 'none' }} /><span>memory_{String(index + 1).padStart(2, '0')}.jpg</span></div><p>{item.caption}</p><small>{String(index + 1).padStart(2, '0')} / {String(memories.length).padStart(2, '0')}</small></div><button className="lightbox-arrow next" type="button" onClick={(event) => { event.stopPropagation(); setIndex((index + 1) % memories.length) }} aria-label="Ảnh tiếp">→</button></div> }
-function MemoryGallery() { const [active, setActive] = useState(null); return <section className="memories-section section-shell" id="memories"><div className="section-heading"><p className="section-index">04 / commit history</p><h2>Những phiên bản<br /><em>đã đi qua.</em></h2></div><div className="memory-grid">{memories.map((item, index) => <button className="memory-item" type="button" key={item.src} onClick={() => setActive(index)}><span className="memory-number">{String(index + 1).padStart(2, '0')}</span><div className="photo-placeholder"><img className="memory-image" src={item.src} alt={item.alt} loading="lazy" onError={(event) => { event.currentTarget.style.display = 'none' }} /><span>memory_{String(index + 1).padStart(2, '0')}.jpg</span></div><p>{item.caption}</p></button>)}</div><Lightbox active={active !== null} index={active || 0} setIndex={setActive} close={() => setActive(null)} /></section> }
+function ThemeToggle({ theme, setTheme }) {
+  return (
+    <button
+      className="theme-toggle-btn"
+      type="button"
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      aria-label="Chuyển giao diện sáng/tối"
+      title="Chuyển đổi sáng/tối"
+    >
+      {theme === 'dark' ? '☀️' : '🌙'}
+    </button>
+  )
+}
+
+function Hero({ onReplay }) {
+  return (
+    <header className="hero-section section-shell" id="top">
+      <div className="hero-grid">
+        <div className="hero-content">
+          <div className="hero-status-pill">
+            <span className="status-dot" />
+            <span>graduation_ceremony.status = 200</span>
+          </div>
+          
+          <h1 className="hero-title">
+            Nguyễn <br />
+            <span className="gradient-text">Tài Trí</span>
+          </h1>
+
+          <p className="hero-lead">
+            Trân trọng kính mời bạn đến chung vui và ghi lại khoảnh khắc đáng nhớ trong ngày lễ tốt nghiệp đại học của mình.
+          </p>
+
+          <div className="code-card">
+            <div className="code-card-header">
+              <div className="window-dots">
+                <span className="dot-red" />
+                <span className="dot-yellow" />
+                <span className="dot-green" />
+              </div>
+              <small>graduate_profile.ts</small>
+            </div>
+            <div className="code-card-body">
+              <span className="syn-keyword">const</span> <span className="syn-var">engineer</span> = &#123;<br />
+              &nbsp;&nbsp;name: <span className="syn-string">"{invitation.graduate}"</span>,<br />
+              &nbsp;&nbsp;major: <span className="syn-string">"{invitation.major}"</span>,<br />
+              &nbsp;&nbsp;school: <span className="syn-string">"UTH TP.HCM"</span>,<br />
+              &nbsp;&nbsp;status: <span className="syn-string">"Ready for new horizons 🚀"</span><br />
+              &#125;;
+            </div>
+          </div>
+        </div>
+
+        <div className="hero-portrait-wrapper">
+          <div className="portrait-container">
+            <div className="portrait-scan-line" />
+            <img
+              className="portrait-img"
+              src="/src/assets/portrait.jpg"
+              alt="Chân dung Nguyễn Tài Trí"
+              onError={(e) => {
+                e.currentTarget.style.display = 'none'
+              }}
+            />
+            <div className="portrait-fallback-icon">🎓</div>
+            <h3>{invitation.graduate}</h3>
+            <p>{invitation.major}</p>
+          </div>
+
+          <div className="hero-actions">
+            <button className="btn-replay" type="button" onClick={onReplay}>
+              <span>✉️</span> Mở lại phong thư
+            </button>
+            <button 
+              className="btn-replay" 
+              type="button" 
+              onClick={() => {
+                triggerConfetti()
+              }}
+              title="Tung hoa giấy chúc mừng!"
+            >
+              <span>🎉</span> Chúc mừng!
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function EventInfo() {
+  return (
+    <section className="section-block section-shell" id="event">
+      <span className="section-tag">01 // Event Schedule</span>
+      <h2 className="section-title">
+        Thời gian & <em>Địa điểm</em>
+      </h2>
+
+      <div className="event-cards-grid">
+        <article className="event-card">
+          <div className="card-top">
+            <span className="card-badge">THỜI GIAN</span>
+            <span className="card-icon">⏰</span>
+          </div>
+          <div className="event-card-value">10:00</div>
+          <div className="event-card-desc">
+            Thứ Tư, ngày 18 tháng 11 năm 2026
+            <span className="event-card-sub">Giờ Việt Nam (GMT+7)</span>
+          </div>
+        </article>
+
+        <article className="event-card">
+          <div className="card-top">
+            <span className="card-badge">ĐỊA ĐIỂM</span>
+            <span className="card-icon">📍</span>
+          </div>
+          <div className="event-card-value" style={{ fontSize: '28px', lineHeight: 1.2 }}>
+            {invitation.venue}
+          </div>
+          <div className="event-card-desc">
+            {invitation.address}
+            <span className="event-card-sub">Trường ĐH Giao thông vận tải TP.HCM</span>
+          </div>
+        </article>
+      </div>
+    </section>
+  )
+}
+
+function Countdown() {
+  const time = useCountdown(invitation.targetDate)
+
+  return (
+    <section className="section-block section-shell">
+      <div className="countdown-box">
+        <span className="section-tag" style={{ color: 'var(--accent-light)' }}>
+          ⏱️ Cột mốc đang đến gần
+        </span>
+        <h2 className="countdown-title">
+          {time.total > 0 ? 'Đếm ngược đến giờ vàng' : 'Chào mừng bạn đã đến tham dự!'}
+        </h2>
+
+        {time.total > 0 && (
+          <div className="countdown-timer">
+            <div className="countdown-segment">
+              <span className="countdown-num">{String(time.days).padStart(2, '0')}</span>
+              <span className="countdown-lbl">Ngày</span>
+            </div>
+            <span className="countdown-colon">:</span>
+            <div className="countdown-segment">
+              <span className="countdown-num">{String(time.hours).padStart(2, '0')}</span>
+              <span className="countdown-lbl">Giờ</span>
+            </div>
+            <span className="countdown-colon">:</span>
+            <div className="countdown-segment">
+              <span className="countdown-num">{String(time.minutes).padStart(2, '0')}</span>
+              <span className="countdown-lbl">Phút</span>
+            </div>
+            <span className="countdown-colon">:</span>
+            <div className="countdown-segment">
+              <span className="countdown-num">{String(time.seconds).padStart(2, '0')}</span>
+              <span className="countdown-lbl">Giây</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+function MapSection() {
+  return (
+    <section className="section-block section-shell" id="map">
+      <span className="section-tag">02 // Navigation</span>
+      <h2 className="section-title">
+        Chỉ dẫn <em>đường đi</em>
+      </h2>
+
+      <div className="map-grid">
+        <div className="map-info">
+          <p>
+            Buổi lễ sẽ diễn ra tại khuôn viên trường. Rất mong được đón tiếp bạn và cùng chụp những tấm ảnh lưu niệm tuyệt đẹp!
+          </p>
+          <a
+            className="btn-primary"
+            href={invitation.mapsUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <span>🗺️</span> Mở Google Maps Chỉ Đường
+          </a>
+        </div>
+
+        <div className="map-frame-wrapper">
+          <iframe
+            src={invitation.mapEmbed}
+            title="Bản đồ đến Trường Đại học Giao thông vận tải TP.HCM"
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Lightbox({ active, index, setIndex, close }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') close()
+      if (e.key === 'ArrowRight') setIndex((index + 1) % memories.length)
+      if (e.key === 'ArrowLeft') setIndex((index - 1 + memories.length) % memories.length)
+    }
+
+    if (active) {
+      document.body.style.overflow = 'hidden'
+      window.addEventListener('keydown', onKey)
+    }
+
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [active, close, index, setIndex])
+
+  if (!active) return null
+  const item = memories[index]
+
+  return (
+    <div className="lightbox-overlay" onClick={close} role="dialog" aria-modal="true">
+      <div className="lightbox-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="lightbox-close-btn" type="button" onClick={close} aria-label="Đóng">
+          ✕
+        </button>
+
+        <div className="lightbox-img-wrap">
+          <img
+            src={item.src}
+            alt={item.alt}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none'
+            }}
+          />
+          <div className="gallery-placeholder">
+            <span>📷</span>
+            {item.alt}
+          </div>
+        </div>
+
+        <p className="lightbox-caption">{item.caption}</p>
+      </div>
+    </div>
+  )
+}
+
+function MemoryGallery() {
+  const [active, setActive] = useState(null)
+
+  return (
+    <section className="section-block section-shell" id="memories">
+      <span className="section-tag">03 // Memories</span>
+      <h2 className="section-title">
+        Khoảnh khắc <em>thời sinh viên</em>
+      </h2>
+
+      <div className="gallery-grid">
+        {memories.map((item, index) => (
+          <div
+            className="gallery-card"
+            key={item.src}
+            onClick={() => setActive(index)}
+          >
+            <div className="gallery-photo-frame">
+              <img
+                className="gallery-img"
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                }}
+              />
+              <div className="gallery-placeholder">
+                <span>📸</span>
+                {item.alt}
+              </div>
+            </div>
+            <p className="gallery-caption">{item.caption}</p>
+          </div>
+        ))}
+      </div>
+
+      <Lightbox
+        active={active !== null}
+        index={active || 0}
+        setIndex={setActive}
+        close={() => setActive(null)}
+      />
+    </section>
+  )
+}
+
 function Rsvp() {
   const [wishForm, setWishForm] = useState({ name: '', message: '' })
-  const [wishes, setWishes] = useState([])
+  const [wishes, setWishes] = useState([
+    { id: 1, name: 'Người bạn thân', message: 'Chúc mừng Trí tốt nghiệp thật xuất sắc! Chúc chặng đường mới luôn rực rỡ và thành công!' }
+  ])
   const [attendance, setAttendance] = useState('')
   const [attendanceName, setAttendanceName] = useState('')
 
-  const addWish = (event) => {
-    event.preventDefault()
+  const addWish = (e) => {
+    e.preventDefault()
+    if (!wishForm.name || !wishForm.message) return
     setWishes([{ ...wishForm, id: Date.now() }, ...wishes])
     setWishForm({ name: '', message: '' })
+    triggerConfetti()
   }
 
-  const deleteWish = (id) => setWishes(wishes.filter((wish) => wish.id !== id))
+  const deleteWish = (id) => setWishes(wishes.filter((w) => w.id !== id))
 
-  return <section className="rsvp-section section-shell" id="rsvp">
-    <div className="rsvp-copy"><p className="section-index">05 / rsvp</p><h2>Gửi một lời chúc,<br /><em>giữ lại một kỷ niệm.</em></h2><p>Bạn có thể để lại lời nhắn ngay trên thiệp. Phần xác nhận tham dự nằm ngay bên dưới.</p></div>
-    <div className="rsvp-panels">
-      <div className="rsvp-panel wishes-panel"><div className="panel-heading"><span className="card-label">01 / MESSAGE</span><h3>Lời chúc của bạn</h3></div><form className="rsvp-form" onSubmit={addWish}><label>Tên của bạn<input value={wishForm.name} onChange={(event) => setWishForm({ ...wishForm, name: event.target.value })} placeholder="Nhập tên" required /></label><label>Lời chúc<textarea value={wishForm.message} onChange={(event) => setWishForm({ ...wishForm, message: event.target.value })} placeholder="Chúc Trí một chặng đường mới thật rực rỡ..." rows="3" required /></label><button className="button button-primary" type="submit">Đăng lời chúc <Icon>→</Icon></button></form><div className="wish-list">{wishes.length === 0 ? <p className="empty-wishes">Chưa có lời chúc nào. Hãy là người đầu tiên nhé.</p> : wishes.map((wish) => <article className="wish-item" key={wish.id}><div><strong>{wish.name}</strong><p>{wish.message}</p></div><button type="button" className="delete-wish" onClick={() => deleteWish(wish.id)} aria-label={`Xóa lời chúc của ${wish.name}`}>×</button></article>)}</div></div>
-      <div className="rsvp-panel attendance-panel"><div className="panel-heading"><span className="card-label">02 / ATTENDANCE</span><h3>Xác nhận tham dự</h3></div><label className="attendance-name">Tên của bạn<input value={attendanceName} onChange={(event) => setAttendanceName(event.target.value)} placeholder="Nhập tên" /></label><div className="attendance-options" role="group" aria-label="Lựa chọn tham dự"><button type="button" className={attendance === 'yes' ? 'attendance-option active' : 'attendance-option'} onClick={() => setAttendance('yes')}><span>01</span><strong>Mình sẽ tham dự</strong><small>Hẹn gặp bạn tại buổi lễ</small></button><button type="button" className={attendance === 'no' ? 'attendance-option active' : 'attendance-option'} onClick={() => setAttendance('no')}><span>02</span><strong>Mình không thể tham dự</strong><small>Hẹn gặp bạn vào dịp khác</small></button></div>{attendance && <p className="attendance-status">{attendanceName ? `${attendanceName}, ` : ''}{attendance === 'yes' ? 'mình đã ghi nhận bạn sẽ tham dự.' : 'mình đã ghi nhận lời nhắn của bạn.'}</p>}</div>
-    </div>
-  </section>
+  return (
+    <section className="section-block section-shell" id="rsvp">
+      <span className="section-tag">04 // RSVP & Guestbook</span>
+      <h2 className="section-title">
+        Gửi lời chúc & <em>Xác nhận tham dự</em>
+      </h2>
+
+      <div className="rsvp-grid">
+        {/* Guestbook Wishes Panel */}
+        <div className="rsvp-box">
+          <div className="rsvp-box-header">
+            <span>✍️</span>
+            <h3>Sổ lưu bút lời chúc</h3>
+          </div>
+
+          <form onSubmit={addWish} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            <div className="rsvp-input-group">
+              <label>Tên của bạn</label>
+              <input
+                value={wishForm.name}
+                onChange={(e) => setWishForm({ ...wishForm, name: e.target.value })}
+                placeholder="Nhập tên bạn..."
+                required
+              />
+            </div>
+            <div className="rsvp-input-group">
+              <label>Lời nhắn / Lời chúc</label>
+              <textarea
+                value={wishForm.message}
+                onChange={(e) => setWishForm({ ...wishForm, message: e.target.value })}
+                placeholder="Gửi lời chúc mừng đến Trí..."
+                rows="3"
+                required
+              />
+            </div>
+            <button className="btn-primary" type="submit" style={{ justifyContent: 'center' }}>
+              <span>🚀</span> Đăng Lời Chúc
+            </button>
+          </form>
+
+          <div className="wishes-scroll-list">
+            {wishes.map((wish) => (
+              <div className="wish-bubble" key={wish.id}>
+                <div>
+                  <strong>{wish.name}</strong>
+                  <p>{wish.message}</p>
+                </div>
+                <button
+                  type="button"
+                  className="wish-delete-btn"
+                  onClick={() => deleteWish(wish.id)}
+                  aria-label="Xóa"
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Attendance Confirmation Panel */}
+        <div className="rsvp-box">
+          <div className="rsvp-box-header">
+            <span>💌</span>
+            <h3>Xác nhận tham dự</h3>
+          </div>
+
+          <div className="rsvp-input-group">
+            <label>Họ và tên của bạn</label>
+            <input
+              value={attendanceName}
+              onChange={(e) => setAttendanceName(e.target.value)}
+              placeholder="Nhập họ tên để Trí tiện đón tiếp..."
+            />
+          </div>
+
+          <div className="attendance-choice-group">
+            <button
+              type="button"
+              className={`attendance-btn ${attendance === 'yes' ? 'active' : ''}`}
+              onClick={() => {
+                setAttendance('yes')
+                triggerConfetti()
+              }}
+            >
+              <span>🎉</span>
+              <strong>Sẽ tham dự</strong>
+              <small style={{ color: 'var(--text-muted)' }}>Hẹn gặp bạn tại trường!</small>
+            </button>
+
+            <button
+              type="button"
+              className={`attendance-btn ${attendance === 'no' ? 'active' : ''}`}
+              onClick={() => setAttendance('no')}
+            >
+              <span>💐</span>
+              <strong>Không thể đến</strong>
+              <small style={{ color: 'var(--text-muted)' }}>Hẹn dịp gặp gỡ khác</small>
+            </button>
+          </div>
+
+          {attendance && (
+            <div className="attendance-alert">
+              <span>✓</span>
+              <span>
+                Cảm ơn {attendanceName ? <strong>{attendanceName}</strong> : 'bạn'},{' '}
+                {attendance === 'yes'
+                  ? 'mình đã ghi nhận bạn sẽ đến chung vui!'
+                  : 'mình đã nhận được phản hồi và lời chúc của bạn!'}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  )
 }
-function Footer() { return <footer className="footer section-shell"><div><p className="eyebrow">git commit -m "Tốt nghiệp 2026"</p><h2>Cảm ơn vì đã<br /><em>đồng hành.</em></h2><p className="footer-note">Rất mong bạn sẽ có mặt trong ngày đặc biệt của mình. Sự hiện diện của bạn sẽ làm khoảnh khắc này trọn vẹn hơn.</p></div><div className="footer-contact"><p>LIÊN HỆ / ZALO</p><a href={`tel:${invitation.phone}`}>{invitation.phone}</a><small>{invitation.graduate}<br />{invitation.major}</small></div><div className="footer-bottom"><span>© 2026 {invitation.graduate}</span><a href="#top">Về đầu trang ↑</a></div></footer> }
-function ScrollProgress() { const [progress, setProgress] = useState(0); useEffect(() => { const update = () => { const max = document.documentElement.scrollHeight - window.innerHeight; setProgress(max > 0 ? window.scrollY / max : 0) }; update(); window.addEventListener('scroll', update, { passive: true }); return () => window.removeEventListener('scroll', update) }, []); return <div className="scroll-progress" style={{ transform: `scaleX(${progress})` }} aria-hidden="true" /> }
-function App() { const [status, setStatus] = useState('closed'); const [introVisible, setIntroVisible] = useState(true); const [theme, setTheme] = useState('light'); useEffect(() => { document.documentElement.dataset.theme = theme }, [theme]); const replay = () => { setStatus('closed'); setIntroVisible(true) }; return <><EnvelopeIntro status={status} setStatus={setStatus} visible={introVisible} setVisible={setIntroVisible} /><div className="site site-visible"><ScrollProgress /><nav className="nav section-shell"><a href="#top" className="brand">N.T.T <span>/ 2026</span></a><div className="nav-links"><a href="#event">Sự kiện</a><a href="#memories">Kỷ niệm</a><a href="#rsvp">RSVP</a></div><ThemeToggle theme={theme} setTheme={setTheme} /></nav><main><Hero onReplay={replay} /><EventInfo /><Countdown /><MapSection /><MemoryGallery /><Rsvp /></main><Footer /></div></> }
-export default App
+
+function Footer() {
+  return (
+    <footer className="site-footer section-shell">
+      <p className="footer-quote">
+        "Sự hiện diện của bạn là món quà ý nghĩa nhất cho ngày lễ tốt nghiệp của mình. Cảm ơn vì đã luôn đồng hành cùng Trí trong suốt chặng đường qua!"
+      </p>
+
+      <a className="footer-contact-pill" href={`tel:${invitation.phone}`}>
+        <span>📞</span> Zalo / Điện thoại: {invitation.phone}
+      </a>
+
+      <p className="footer-copyright">
+        © 2026 {invitation.graduate} · Graduation Invitation
+      </p>
+    </footer>
+  )
+}
+
+function ScrollProgress() {
+  const [progress, setProgress] = useState(0)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const max = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(max > 0 ? window.scrollY / max : 0)
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  return (
+    <div
+      className="scroll-progress-bar"
+      style={{ transform: `scaleX(${progress})` }}
+      aria-hidden="true"
+    />
+  )
+}
+
+export default function InvitationApp() {
+  const [status, setStatus] = useState('closed')
+  const [introVisible, setIntroVisible] = useState(true)
+  const [theme, setTheme] = useState('dark')
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+  }, [theme])
+
+  const replay = () => {
+    setStatus('closed')
+    setIntroVisible(true)
+  }
+
+  return (
+    <>
+      {/* Background ambient lighting effects */}
+      <div className="ambient-glow ambient-glow-1" />
+      <div className="ambient-glow ambient-glow-2" />
+
+      {/* 3D Envelope Intro */}
+      <EnvelopeIntro
+        status={status}
+        setStatus={setStatus}
+        visible={introVisible}
+        setVisible={setIntroVisible}
+      />
+
+      <ScrollProgress />
+
+      {/* Floating Glass Navigation */}
+      <nav className="site-nav section-shell">
+        <div className="nav-container">
+          <a href="#top" className="nav-brand">
+            N.T.T <span className="nav-brand-badge">2026</span>
+          </a>
+          <ul className="nav-links">
+            <li><a href="#event" className="nav-link">Sự kiện</a></li>
+            <li><a href="#map" className="nav-link">Bản đồ</a></li>
+            <li><a href="#memories" className="nav-link">Kỷ niệm</a></li>
+            <li><a href="#rsvp" className="nav-link">RSVP</a></li>
+          </ul>
+          <ThemeToggle theme={theme} setTheme={setTheme} />
+        </div>
+      </nav>
+
+      {/* Main Content */}
+      <main>
+        <Hero onReplay={replay} />
+        <EventInfo />
+        <Countdown />
+        <MapSection />
+        <MemoryGallery />
+        <Rsvp />
+      </main>
+
+      <Footer />
+    </>
+  )
+}
