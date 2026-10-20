@@ -76,11 +76,11 @@ function EnvelopeIntro({ status, setStatus, visible, setVisible }) {
             onClick={start}
             disabled={status === 'opening'}
           >
-            <div className="env-container">
-              {/* Back background */}
-              <div className="env-back-bg" />
+            <div className="env-box">
+              {/* Mặt nền bao thư */}
+              <div className="env-back" />
 
-              {/* Slidable Letter inside */}
+              {/* Thiệp trắng - ẩn dưới đáy ban đầu, trượt lên khi mở */}
               <div className="env-letter">
                 <div className="env-letter-head">
                   <span className="env-letter-tag">INVITATION CARD</span>
@@ -96,11 +96,16 @@ function EnvelopeIntro({ status, setStatus, visible, setVisible }) {
                 </div>
               </div>
 
-              {/* Front flap and fold cover */}
-              <div className="env-front-cover" />
+              {/* Cánh gập mặt trước che kín thiệp */}
+              <div className="env-fold-center" />
+              <div className="env-fold-left" />
+              <div className="env-fold-right" />
+              <div className="env-fold-bottom" />
+
+              {/* Nắp phong bì (z-index cao nhất) */}
               <div className="env-flap" />
-              
-              {/* Wax Seal Stamp */}
+
+              {/* Con dấu sáp niêm phong */}
               <div className="env-seal">TT</div>
             </div>
           </button>

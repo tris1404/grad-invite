@@ -1,4 +1,7 @@
-/* 3D Realistic Envelope Intro Styles */
+/* ===================================================
+   Realistic Envelope - Thiệp giấu bên trong đúng logic
+   =================================================== */
+
 .intro {
   position: fixed;
   inset: 0;
@@ -24,13 +27,6 @@
   pointer-events: none;
 }
 
-.intro-particles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
 .intro-badge {
   display: inline-flex;
   align-items: center;
@@ -45,42 +41,28 @@
   text-transform: uppercase;
   color: var(--primary-light);
   margin-bottom: 24px;
-  animation: pulse-border 2.5s infinite;
 }
 
-@keyframes pulse-border {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.3); }
-  50% { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
-}
-
-/* Stage & Envelope Perspective Container */
+/* Stage bọc ngoài - cần đủ cao để thiệp vươn lên trên */
 .envelope-stage {
-  perspective: 1200px;
   position: relative;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end; /* canh đáy, thiệp sẽ vươn lên phía trên */
   width: 100%;
   max-width: 440px;
+  padding-top: 160px; /* khoảng trắng để thiệp trượt lên vào */
 }
 
 .envelope-wrapper {
   position: relative;
   width: min(88vw, 380px);
-  height: 250px;
-  transform-style: preserve-3d;
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.envelope-wrapper:hover {
-  transform: translateY(-4px) scale(1.02);
 }
 
 .envbtn {
   background: none;
   border: none;
   width: 100%;
-  height: 100%;
   padding: 0;
   cursor: pointer;
   outline: none;
@@ -88,194 +70,185 @@
   position: relative;
 }
 
-/* Envelope Container */
-.env-container {
+/* ================================================
+   .env-box - Toàn bộ phong bì
+   overflow: hidden -> nhốt thiệp kín trong ruột
+   ================================================ */
+.env-box {
   position: relative;
   width: 100%;
-  height: 100%;
-  border-radius: var(--radius-md);
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 35px -5px var(--primary-glow);
+  /* aspect-ratio tạo chiều cao thật sự, overflow:hidden mới clip được */
+  aspect-ratio: 3 / 2;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 50px -12px rgba(0, 0, 0, 0.6),
+    0 0 40px -8px var(--primary-glow);
 }
 
-/* Envelope Back Side */
-.env-back-bg {
+/* Mặt nền bao thư */
+.env-back {
   position: absolute;
   inset: 0;
-  background: linear-gradient(145deg, #1e1b4b, #312e81);
-  border-radius: var(--radius-md);
-  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(145deg, #312e81, #1e1b4b);
   z-index: 1;
 }
 
-:root[data-theme='light'] .env-back-bg {
+:root[data-theme='light'] .env-back {
   background: linear-gradient(145deg, #4338ca, #3730a3);
 }
 
-/* The Letter Card inside */
+/* ================================================
+   Tấm thiệp trắng
+   - Nằm bên trong phong bì (top: 10%), bị che bởi
+     các cánh gập phía trước (z-index cao hơn)
+   - Khi mở: overflow -> visible, thiệp trượt lên
+             top: -90% (vượt ra khỏi miệng phong bì)
+   ================================================ */
 .env-letter {
   position: absolute;
   left: 6%;
   right: 6%;
-  top: 8%;
-  height: 84%;
+  top: 10%;        /* nằm trong hộp */
+  height: 82%;
   background: #ffffff;
   color: #0f172a;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   padding: 16px 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
   border: 1px solid #e2e8f0;
-  transform: translateY(8%);
-  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.4s, opacity 0.5s ease;
-  pointer-events: none;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+  /* Nằm trong phong bì, bị các cánh gập che */
+  transform: translateY(0);
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s;
 }
 
-.env-letter-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.env-letter-tag {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #64748b;
-  font-weight: 600;
-}
-
-.env-letter-icon {
-  font-size: 16px;
-}
-
-.env-letter-title {
-  font-family: var(--font-display);
-  font-size: clamp(20px, 5.5vw, 24px);
-  line-height: 1.15;
-  color: #1e1b4b;
-  font-weight: 800;
-}
-
-.env-letter-title span {
-  color: #4f46e5;
-  display: block;
-}
-
-.env-letter-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px dashed #cbd5e1;
-  padding-top: 8px;
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: #475569;
-}
-
-.env-letter-foot strong {
-  color: #4f46e5;
-}
-
-/* Envelope Front Pockets (Fold) */
-.env-front-cover {
+/* Mặt giữa phong bì - che toàn bộ phần giữa mà cánh không chạm tới */
+.env-fold-center {
   position: absolute;
   inset: 0;
-  z-index: 3;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, #3730a3, #4338ca);
-  clip-path: polygon(0% 0%, 50% 55%, 100% 0%, 100% 100%, 0% 100%);
-  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
+  z-index: 4;
+  background: linear-gradient(145deg, #312e81 0%, #3730a3 50%, #2d2b7a 100%);
+  clip-path: polygon(0% 15%, 50% 54%, 100% 15%, 100% 93%, 50% 54%, 0% 93%);
+  /* Hình lục giác che phần giữa 2 bên tảo ra tất cả các cánh gập */
 }
 
-.env-front-cover::after {
-  content: '';
+/* Cánh gập trái */
+.env-fold-left {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top right, rgba(0,0,0,0.2), transparent 60%);
-  pointer-events: none;
+  z-index: 4;
+  background: linear-gradient(120deg, #2d2b7a 0%, #3730a3 100%);
+  clip-path: polygon(0% 15%, 50% 54%, 0% 93%);
 }
 
-/* Flap top */
+/* Cánh gập phải */
+.env-fold-right {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(240deg, #2d2b7a 0%, #3730a3 100%);
+  clip-path: polygon(100% 15%, 50% 54%, 100% 93%);
+}
+
+/* Cánh gập đáy dưới */
+.env-fold-bottom {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: linear-gradient(180deg, #4338ca 0%, #3730a3 100%);
+  clip-path: polygon(0% 100%, 50% 50%, 100% 100%);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.12);
+}
+
+/* ================================================
+   Nắp phong bì - z-index CAO NHẤT, che trên cùng
+   Lật ngược 180° khi mở
+   ================================================ */
 .env-flap {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 57%;
-  z-index: 4;
-  background: linear-gradient(180deg, #4f46e5, #4338ca);
-  clip-path: polygon(0% 0%, 100% 0%, 50% 100%);
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  inset: 0;
+  z-index: 8;
+  /* Nắp hình tam giác từ đỉnh xuống giữa */
+  background: linear-gradient(160deg, #4f46e5 0%, #4338ca 70%);
+  clip-path: polygon(0% 0%, 100% 0%, 50% 54%);
   transform-origin: top center;
   transform: perspective(900px) rotateX(0deg);
-  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.05s linear 0.35s;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.72s cubic-bezier(0.4, 0, 0.2, 1),
+    z-index 0s linear 0.36s;
+  /* Nét viền nhẹ ở cạnh trên */
+  border-top: 1px solid rgba(255,255,255,0.25);
 }
 
-.env-flap::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-/* Wax Seal Stamp */
+/* Con dấu sáp */
 .env-seal {
   position: absolute;
   left: 50%;
-  top: 56%;
+  top: 52%;
   transform: translate(-50%, -50%);
   width: 46px;
   height: 46px;
   background: radial-gradient(circle at 35% 35%, #fbbf24, #d97706);
   border-radius: 50%;
-  z-index: 5;
+  z-index: 9;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow:
+    0 4px 14px rgba(217, 119, 6, 0.55),
+    inset 0 2px 4px rgba(255, 255, 255, 0.65),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.35);
   border: 2px solid #b45309;
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 15px;
   color: #78350f;
   letter-spacing: -0.05em;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  transition: transform 0.3s ease, opacity 0.25s ease;
   user-select: none;
 }
 
 .envbtn:hover .env-seal {
-  transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
+  transform: translate(-50%, -50%) scale(1.12) rotate(6deg);
 }
 
-/* Opening Animations */
+/* ================================================
+   ANIMATION KHI MỞ
+   ================================================ */
+
+/* 1. Nắp lật ngược lên trời */
 .intro.opening .env-flap {
   transform: perspective(900px) rotateX(180deg);
-  z-index: 1;
+  z-index: 0; /* chìm xuống dưới sau khi lật */
 }
 
+/* 2. Con dấu tan biến */
 .intro.opening .env-seal {
   opacity: 0;
-  transform: translate(-50%, -50%) scale(0.6);
+  transform: translate(-50%, -50%) scale(0.5);
 }
 
+/* 3. Quan trọng nhất: cho phép thiệp tràn ra ngoài hộp khi mở */
+.intro.opening .env-box {
+  overflow: visible;
+}
+
+/* 4. Thiệp trượt ra khỏi miệng phong bì */
 .intro.opening .env-letter {
-  transform: translateY(-68%);
-  z-index: 10;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+  transform: translateY(-100%);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-/* Interactive Hint & Skip */
+/* ================================================
+   Gợi ý và nút bỏ qua
+   ================================================ */
 .intro-hint {
-  margin-top: 32px;
+  margin-top: 28px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -316,7 +289,7 @@
   border-color: var(--border);
 }
 
-/* Floating animation for subtle idle movement */
+/* Idle bob animation */
 @media (prefers-reduced-motion: no-preference) {
   .envelope-wrapper {
     animation: gentle-bob 4s ease-in-out infinite;
